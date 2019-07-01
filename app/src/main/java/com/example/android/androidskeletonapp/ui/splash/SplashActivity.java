@@ -3,18 +3,12 @@ package com.example.android.androidskeletonapp.ui.splash;
 import android.os.Bundle;
 
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.data.Sdk;
-import com.example.android.androidskeletonapp.data.service.ActivityStarter;
-import com.example.android.androidskeletonapp.ui.login.LoginActivity;
-import com.example.android.androidskeletonapp.ui.main.MainActivity;
 
-import org.hisp.dhis.android.core.d2manager.D2Manager;
+import org.hisp.dhis.android.core.D2;
 
 import androidx.appcompat.app.AppCompatActivity;
 import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -25,20 +19,14 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        disposable = D2Manager.setUp(Sdk.getD2Configuration(this))
-                .andThen(isLogged())
-                .doOnSuccess(isLogged -> {
-                    if(isLogged) {
-                        ActivityStarter.startActivity(this, MainActivity.class,true);
-                    } else {
-                        ActivityStarter.startActivity(this, LoginActivity.class,true);
+        disposable =
+                instantiateD2()
+                .doOnSuccess(d2 -> {
+                    // TODO Toast success
                     }
-                }).doOnError(throwable -> {
-                    throwable.printStackTrace();
-                    ActivityStarter.startActivity(this, LoginActivity.class,true);
+                ).doOnError(throwable -> {
+                    // TODO Toast error
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
     }
 
@@ -50,13 +38,8 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-    private Single<Boolean> isLogged() {
-        return Single.defer(() -> {
-            if (D2Manager.isServerUrlSet()) {
-                return D2Manager.instantiateD2().flatMap(d2 -> d2.userModule().isLogged());
-            } else {
-                return Single.just(Boolean.FALSE);
-            }
-        });
+    private Single<D2> instantiateD2() {
+        // TODO Instantiate d2
+        return Single.never();
     }
 }

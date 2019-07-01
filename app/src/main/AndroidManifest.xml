@@ -30,18 +30,6 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.login.LoginActivity"
-            android:label="@string/title_activity_login" />
-        <activity
-            android:name=".ui.main.MainActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.programs.ProgramsActivity"
-            android:label="@string/title_activity_programs"
-            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
