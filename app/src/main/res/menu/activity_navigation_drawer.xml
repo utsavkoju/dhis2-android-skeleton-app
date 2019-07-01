@@ -4,10 +4,7 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/navPrograms"
-            android:icon="@drawable/ic_programs_black_24dp"
-            android:title="@string/title_activity_programs" />
+        <!--TODO Add navigation to program list-->
 
     </group>
 
