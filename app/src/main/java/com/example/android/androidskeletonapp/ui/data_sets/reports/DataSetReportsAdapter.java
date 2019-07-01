@@ -34,14 +34,6 @@ public class DataSetReportsAdapter extends PagedListAdapter<DataSetReport, ListI
 
     @Override
     public void onBindViewHolder(@NonNull ListItemWithSyncHolder holder, int position) {
-        DataSetReport dataSetReport = getItem(position);
-        holder.title.setText(MessageFormat.format("{0} - {1}",
-                dataSetReport.period(), dataSetReport.periodType().name()));
-        holder.subtitle1.setText(dataSetReport.organisationUnitDisplayName());
-        holder.subtitle2.setText(dataSetReport.attributeOptionComboDisplayName());
-        holder.icon.setImageResource(R.drawable.ic_assignment_black_24dp);
-        setBackgroundColor(R.color.colorAccentDark, holder.icon);
-        holder.rightText.setText(dataSetReport.valueCount().toString());
-        setState(dataSetReport.state(), holder.syncIcon);
+        // TODO bind view
     }
 }
