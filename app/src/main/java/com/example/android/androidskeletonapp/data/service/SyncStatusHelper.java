@@ -1,11 +1,8 @@
 package com.example.android.androidskeletonapp.data.service;
 
 import com.example.android.androidskeletonapp.data.Sdk;
-import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.common.State;
-
-import java.util.Collections;
 
 public class SyncStatusHelper {
 
@@ -30,9 +27,7 @@ public class SyncStatusHelper {
     }
 
     public static boolean isThereDataToUpload() {
-        return Sdk.d2().trackedEntityModule().trackedEntityInstances.byState()
-                .notIn(Collections.singletonList(State.SYNCED)).count() > 0 ||
-                Sdk.d2().dataValueModule().dataValues.byState()
-                        .notIn(Collections.singletonList(State.SYNCED)).count() > 0;
+        // TODO Logic to know if there is data to upload
+        return true;
     }
 }

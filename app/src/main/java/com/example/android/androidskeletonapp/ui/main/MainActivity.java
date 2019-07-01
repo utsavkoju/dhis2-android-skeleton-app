@@ -27,7 +27,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private FloatingActionButton syncMetadataButton;
     private FloatingActionButton syncDataButton;
-    private FloatingActionButton uploadDataButton;
+    // TODO - private FloatingActionButton uploadDataButton;
 
     private TextView syncStatusText;
     private ProgressBar progressBar;
@@ -93,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void inflateMainView() {
         syncMetadataButton = findViewById(R.id.syncMetadataButton);
         syncDataButton = findViewById(R.id.syncDataButton);
-        uploadDataButton = findViewById(R.id.uploadDataButton);
+        // TODO use an upload button to upload data
 
         syncStatusText = findViewById(R.id.notificator);
         progressBar = findViewById(R.id.syncProgressBar);
@@ -112,14 +111,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .setAction("Action", null).show();
             syncStatusText.setText(R.string.syncing_data);
             downloadData();
-        });
-
-        uploadDataButton.setOnClickListener(view -> {
-            setSyncing();
-            Snackbar.make(view, "Uploading data", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-            syncStatusText.setText(R.string.uploading_data);
-            uploadData();
         });
     }
 
@@ -140,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void disableAllButtons() {
         setEnabledButton(syncMetadataButton, false);
         setEnabledButton(syncDataButton, false);
-        setEnabledButton(uploadDataButton, false);
+        // TODO disable upload button
     }
 
     private void enablePossibleButtons(boolean metadataSynced) {
@@ -149,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (metadataSynced) {
                 setEnabledButton(syncDataButton, true);
                 if (SyncStatusHelper.isThereDataToUpload()) {
-                    setEnabledButton(uploadDataButton, true);
+                    // TODO enable upload button
                 }
             }
         }
@@ -225,20 +216,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             setSyncingFinished();
                             ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class, false);
                         })
-                        .doOnError(Throwable::printStackTrace)
-                        .subscribe());
-    }
-
-    private void uploadData() {
-        compositeDisposable.add(
-                Single.merge(
-                        Single.fromCallable(Sdk.d2().trackedEntityModule().trackedEntityInstances.upload()),
-                        Single.fromCallable(Sdk.d2().dataValueModule().dataValues.upload()),
-                        Single.fromCallable(Sdk.d2().eventModule().events.upload())
-                )
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnComplete(this::setSyncingFinished)
                         .doOnError(Throwable::printStackTrace)
                         .subscribe());
     }

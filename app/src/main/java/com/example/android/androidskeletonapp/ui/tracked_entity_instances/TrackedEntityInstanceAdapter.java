@@ -50,7 +50,6 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
         holder.icon.setImageResource(R.drawable.ic_person_black_24dp);
         setBackgroundColor(R.color.colorAccentDark, holder.icon);
         setState(trackedEntityInstance.state(), holder.syncIcon);
-        // TODO bind tracker import conflicts
     }
 
     private String valueAt(List<TrackedEntityAttributeValue> values, String attributeUid) {
