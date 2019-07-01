@@ -14,9 +14,6 @@ import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentForm
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.rules.RuleEngine;
-import org.hisp.dhis.rules.models.RuleAction;
-import org.hisp.dhis.rules.models.RuleActionHideField;
-import org.hisp.dhis.rules.models.RuleEffect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +23,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
-import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.processors.PublishProcessor;
@@ -112,23 +108,15 @@ public class EnrollmentFormActivity extends AppCompatActivity {
         );
 
         disposable.add(
+                // TODO Zip attributes and rule engine calculation
                 engineInitialization
-                        .flatMap(next ->
-                                Flowable.zip(
-                                        EnrollmentFormService.getInstance().getEnrollmentFormFields()
-                                                .subscribeOn(Schedulers.io()),
-                                        engineService.ruleEnrollment().flatMap(ruleEnrollment ->
-                                                Flowable.fromCallable(() -> ruleEngine.evaluate(ruleEnrollment).call()))
-                                                .subscribeOn(Schedulers.io()),
-                                        this::applyEffects
-                                ))
+                        .flatMap(next -> EnrollmentFormService.getInstance().getEnrollmentFormFields()
+                                         .subscribeOn(Schedulers.io()))
+                        .map(this::applyEffects)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                fieldData -> {
-                                    adapter.updateData(fieldData);
-                                    // TODO Check if program has program indicators and show calculate value
-                                },
+                                fieldData -> adapter.updateData(fieldData),
                                 Throwable::printStackTrace
                         )
         );
@@ -147,16 +135,8 @@ public class EnrollmentFormActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private List<FormField> applyEffects(Map<String, FormField> fields,
-                                         List<RuleEffect> ruleEffects) {
-
-        for (RuleEffect ruleEffect : ruleEffects) {
-            RuleAction ruleAction = ruleEffect.ruleAction();
-            if (ruleEffect.ruleAction() instanceof RuleActionHideField) {
-                fields.remove(((RuleActionHideField) ruleAction).field());
-            }
-        }
-
+    private List<FormField> applyEffects(Map<String, FormField> fields) {
+        // TODO Apply rule engine effects
         return new ArrayList<>(fields.values());
     }
 

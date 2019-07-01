@@ -4,10 +4,7 @@ import org.apache.commons.jexl2.JexlEngine;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
@@ -44,8 +41,6 @@ import javax.annotation.Nonnull;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import io.reactivex.Flowable;
-
-import static android.text.TextUtils.isEmpty;
 
 public class RuleEngineService {
 
@@ -93,34 +88,6 @@ public class RuleEngineService {
         );
     }
 
-    public Flowable<RuleEngine> configure(D2 d2, String programUid, String eventUid) {
-        this.d2 = d2;
-        this.programUid = programUid;
-        this.enrollmentUid = d2.eventModule().events.uid(eventUid).get().enrollment();
-        this.eventUid = eventUid;
-        this.stage = null;
-
-        jexlEngine = new JexlEngine();
-
-        Flowable<RuleEngine> initialFlowable;
-
-        if (isEmpty(enrollmentUid))
-            initialFlowable = Flowable.zip(
-                    getRuleVariables(),
-                    getRules(),
-                    getOtherEvents(eventUid),
-                    (ruleVariables, rules, events) -> setUp(ruleVariables, rules, events, null));
-        else
-            initialFlowable = Flowable.zip(
-                    getRuleVariables(),
-                    getRules(),
-                    getOtherEvents(eventUid),
-                    ruleEnrollment(),
-                    this::setUp);
-
-        return initialFlowable;
-    }
-
     public RuleEngine setUp(List<RuleVariable> ruleVariables,
                             List<Rule> rules,
                             List<RuleEvent> events,
@@ -145,37 +112,8 @@ public class RuleEngineService {
     }
 
     public Flowable<RuleEnrollment> ruleEnrollment() {
-        return Flowable.fromCallable(() -> {
-            Enrollment enrollment = d2.enrollmentModule().enrollments.uid(enrollmentUid).get();
-            String ouCode = d2.organisationUnitModule().organisationUnits.uid(enrollment.organisationUnit()).get().code();
-            Program program = d2.programModule().programs.uid(enrollment.program()).withAllChildren().get();
-            List<String> programAttributesUids = getProgramTrackedEntityAttributesUids(program.programTrackedEntityAttributes());
-
-            List<RuleAttributeValue> attributeValues = transformToRuleAttributeValues(
-                    d2.trackedEntityModule().trackedEntityAttributeValues
-                            .byTrackedEntityInstance().eq(enrollment.trackedEntityInstance())
-                            .byTrackedEntityAttribute().in(programAttributesUids)
-                            .get()
-            );
-            return RuleEnrollment.create(
-                    enrollment.uid(),
-                    enrollment.incidentDate(),
-                    enrollment.enrollmentDate(),
-                    enrollment.status() != null ? RuleEnrollment.Status.valueOf(enrollment.status().name()) : RuleEnrollment.Status.ACTIVE,
-                    enrollment.organisationUnit(),
-                    ouCode,
-                    attributeValues,
-                    program.name()
-            );
-        });
-    }
-
-    public Flowable<RuleEvent> ruleEvent() {
-        if (eventUid == null)
-            return Flowable.empty();
-        else
-            return Flowable.fromCallable(() ->
-                    transformToRuleEvent(d2.eventModule().events.uid(eventUid).get()));
+        // TODO get rule enrollment
+        return Flowable.empty();
     }
 
     private List<String> getProgramTrackedEntityAttributesUids(List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes) {
@@ -197,26 +135,8 @@ public class RuleEngineService {
     }
 
     private Flowable<List<RuleEvent>> getEvents(String enrollmentUid) {
-        return Flowable.fromCallable(() -> d2.eventModule().events
-                .byEnrollmentUid().eq(enrollmentUid)
-                .byStatus().in(EventStatus.ACTIVE, EventStatus.COMPLETED)
-                .get()).flatMapIterable(events -> events)
-                .map(this::transformToRuleEvent)
-                .toList().toFlowable();
-    }
-
-    private Flowable<List<RuleEvent>> getOtherEvents(String eventUid) {
-        return Flowable.fromCallable(() -> d2.eventModule().events.uid(eventUid).get())
-                .flatMap(event ->
-                        Flowable.fromCallable(() -> d2.eventModule().events
-                                .byProgramUid().eq(event.program())
-                                .byUid().notIn(event.uid())
-                                .byEventDate().before(event.eventDate())
-                                .byStatus().in(EventStatus.ACTIVE, EventStatus.COMPLETED)
-                                .get()))
-                .flatMapIterable(events -> events)
-                .map(this::transformToRuleEvent)
-                .toList().toFlowable();
+        // TODO get events
+        return Flowable.empty();
     }
 
     private RuleEvent transformToRuleEvent(Event event) {
@@ -249,13 +169,13 @@ public class RuleEngineService {
     }
 
     private Flowable<List<Rule>> getRules() {
-        return Flowable.fromCallable(() -> d2.programModule().programRules.byProgramUid().eq(programUid).withProgramRuleActions().get())
-                .map(this::transformToRule);
+        // TODO get rules
+        return Flowable.empty();
     }
 
     private Flowable<List<RuleVariable>> getRuleVariables() {
-        return Flowable.fromCallable(() -> d2.programModule().programRuleVariables.byProgramUid().eq(programUid).get())
-                .map(this::transformToRuleVariable);
+        // TODO get rule variables
+        return Flowable.empty();
     }
 
     private List<Rule> transformToRule(List<ProgramRule> programRules) {

@@ -7,12 +7,10 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
-import com.example.android.androidskeletonapp.ui.event_form.EventFormActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
 
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.ProgramType;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -65,11 +63,5 @@ public class ProgramsActivity extends ListActivity implements OnProgramSelection
             ActivityStarter.startActivity(this,
                     TrackedEntityInstancesActivity
                             .getTrackedEntityInstancesActivityIntent(this, programUid));
-        else
-            ActivityStarter.startActivity(this,
-                    EventFormActivity.getFormActivityIntent(this,
-                            null,
-                            programUid,
-                            Sdk.d2().organisationUnitModule().organisationUnits.one().get().uid()));
     }
 }
