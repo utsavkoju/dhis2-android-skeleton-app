@@ -3,15 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <item android:title="@string/data_management">
-        <menu>
-            <item
-                android:id="@+id/navWipeData"
-                android:icon="@drawable/ic_delete_forever_black_24dp"
-                android:title="@string/wipe_data" />
-        </menu>
-    </item>
-
     <item android:title="@string/session">
         <menu>
             <item

@@ -7,7 +7,6 @@ import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.ui.login.LoginActivity;
 import com.example.android.androidskeletonapp.ui.main.MainActivity;
-import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.d2manager.D2Manager;
 
@@ -19,7 +18,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private final static boolean DEBUG = true;
     private Disposable disposable;
 
     @Override
@@ -27,9 +25,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        if (DEBUG) {
-            Stetho.initializeWithDefaults(this);
-        }
+        // TODO initialize stetho
 
         disposable = D2Manager.setUp(Sdk.getD2Configuration(this))
                 .andThen(isLogged())
