@@ -10,24 +10,15 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.ui.main.MainActivity;
-import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-
-import org.hisp.dhis.android.core.common.Unit;
-
-import java.util.Observable;
-import java.util.concurrent.Callable;
 
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
-import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -71,11 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                 showLoginFailed(loginResult.getError());
             }
             if (loginResult.getSuccess() != null) {
-                if (Sdk.d2().programModule().programs.count() > 0) {
-                    ActivityStarter.startActivity(this, ProgramsActivity.class,true);
-                } else {
-                    ActivityStarter.startActivity(this, MainActivity.class,true);
-                }
+                ActivityStarter.startActivity(this, MainActivity.class,true);
             }
             setResult(Activity.RESULT_OK);
         });

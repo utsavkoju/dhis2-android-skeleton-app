@@ -8,9 +8,7 @@ import android.widget.TextView;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
-import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
-import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -24,10 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.example.android.androidskeletonapp.data.service.LogOutService.logOut;
 
@@ -185,45 +180,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void syncMetadata() {
-        compositeDisposable.add(Sdk.d2().syncMetaData()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnError(Throwable::printStackTrace)
-                .doOnComplete(() -> {
-                    setSyncingFinished();
-                    ActivityStarter.startActivity(this, ProgramsActivity.class, false);
-                })
-                .subscribe());
+        // TODO Sync user metadata and set syncing finished
     }
 
     private void downloadData() {
-        compositeDisposable.add(
-                Observable.merge(
-                        Sdk.d2().trackedEntityModule().downloadTrackedEntityInstances(10, false, false),
-                        Sdk.d2().aggregatedModule().data().download()
-                )
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnComplete(() -> setSyncingFinished())
-                        .doOnError(Throwable::printStackTrace)
-                        .subscribe());
+        // TODO Download teis, events and data values and set syncing finished
     }
 
     private void wipeData() {
-        compositeDisposable.add(
-                Observable.fromCallable(() -> Sdk.d2().wipeModule().wipeData())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnError(Throwable::printStackTrace)
-                        .doOnComplete(this::setSyncingFinished)
-                        .subscribe());
+        // TODO Wipe data and set syncing finished
     }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        /*TODO Add program navigation*/
 
         if (id == R.id.navWipeData) {
             syncStatusText.setText(R.string.wiping_data);
