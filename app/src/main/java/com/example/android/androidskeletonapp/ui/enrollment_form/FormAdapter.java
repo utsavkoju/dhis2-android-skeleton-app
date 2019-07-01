@@ -18,9 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
 
     private final int OPTIONSET = 98;
-    private final int OPTIONSETIMAGE = 99;
     private final OnValueSaved valueSavedListener;
-    private boolean isListingRendering = true;
 
     private List<FormField> fields;
 
@@ -33,7 +31,6 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
     @NonNull
     @Override
     public FieldHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // TODO Check if value type is OPTIONSETIMAGE and create an option set image field holder
         if (viewType == OPTIONSET) {
             return new OptionSetFieldHolder(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_field_optionset, parent, false), valueSavedListener);
@@ -100,15 +97,11 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
     @Override
     public int getItemViewType(int position) {
         if (fields.get(position).getOptionSetUid() != null && fields.get(position).getOptionSetUid() != null)
-            return OPTIONSET; // TODO Check if not listing rendering and return OPTIONSETIMAGE
+            return OPTIONSET;
         else
             return fields.get(position).getValueType().ordinal();
 
 
-    }
-
-    public void setListingRendering(boolean isListingRendering) {
-        this.isListingRendering = isListingRendering;
     }
 
     public interface OnValueSaved {

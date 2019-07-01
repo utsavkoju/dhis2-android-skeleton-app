@@ -5,11 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.databinding.DataBindingUtil;
-
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.forms.EventFormService;
@@ -18,7 +13,6 @@ import com.example.android.androidskeletonapp.data.service.forms.RuleEngineServi
 import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentFormBinding;
 import com.example.android.androidskeletonapp.ui.enrollment_form.FormAdapter;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.rules.RuleEngine;
 import org.hisp.dhis.rules.models.RuleAction;
@@ -29,6 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -98,19 +96,14 @@ public class EventFormActivity extends AppCompatActivity {
         disposable = new CompositeDisposable();
 
         disposable.add(
-                Flowable.zip(
-                        engineService.configure(Sdk.d2(),
-                                getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name()),
-                                EventFormService.getInstance().getEventUid()),
-                        EventFormService.getInstance().isListingRendering(),
-                        Pair::of
-                )
+                engineService.configure(Sdk.d2(),
+                        getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name()),
+                        EventFormService.getInstance().getEventUid())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                ruleEngineANDrendering -> {
-                                    this.ruleEngine = ruleEngineANDrendering.getLeft();
-                                    this.adapter.setListingRendering(ruleEngineANDrendering.getRight());
+                                ruleEngine -> {
+                                    this.ruleEngine = ruleEngine;
                                     engineInitialization.onNext(true);
                                 },
                                 Throwable::printStackTrace

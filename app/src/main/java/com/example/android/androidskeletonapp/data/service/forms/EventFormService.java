@@ -21,7 +21,6 @@ public class EventFormService {
     private static EventFormService instance;
     private final Map<String, FormField> fieldMap;
     private EventObjectRepository eventRepository;
-    private boolean isListingRendering;
 
     private EventFormService() {
         fieldMap = new LinkedHashMap<>();
@@ -82,9 +81,6 @@ public class EventFormService {
                         TrackedEntityDataValueObjectRepository valueRepository =
                                 d2.trackedEntityModule().trackedEntityDataValues
                                         .value(eventRepository.get().uid(), dataElement.uid());
-
-                        // TODO Create a form field for each option inside an option set
-
                         fieldMap.put(dataElement.uid(), new FormField(
                                 dataElement.uid(), dataElement.optionSetUid(),
                                 dataElement.valueType(), dataElement.displayName(),
@@ -129,10 +125,5 @@ public class EventFormService {
 
     public static void clear() {
         instance = null;
-    }
-
-    public Flowable<Boolean> isListingRendering() {
-        // TODO Check if a program stage section has a different rendering type from listing
-        return Flowable.just(false);
     }
 }
