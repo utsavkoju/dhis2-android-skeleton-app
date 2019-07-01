@@ -8,8 +8,6 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.service.forms.FormField;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.util.Objects;
-
 import androidx.annotation.NonNull;
 
 class TextFieldHolder extends FieldHolder {
@@ -48,15 +46,6 @@ class TextFieldHolder extends FieldHolder {
                     break;
         }
 
-        editText.setText(fieldItem.getValue());
-
-        editText.setEnabled(fieldItem.isEditable());
-
-        editText.setOnFocusChangeListener((view, hasFocus) -> {
-            if (!hasFocus) {
-                if (!Objects.equals(fieldItem.getValue(), editText.getText().toString()))
-                    valueSavedListener.onValueSaved(fieldItem.getUid(), editText.getText().toString());
-            }
-        });
+        // TODO set initial value, enable if editable and add value listener for text changes
     }
 }

@@ -5,8 +5,6 @@ import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.enrollment.EnrollmentObjectRepository;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -54,47 +52,7 @@ public class EnrollmentFormService {
 
 
     public Flowable<Map<String, FormField>> getEnrollmentFormFields() {
-        if (d2 == null)
-            return Flowable.error(
-                    new NullPointerException("D2 is null. EnrollmentForm has not been initialized, use init() function.")
-            );
-        else
-            return Flowable.fromCallable(() ->
-                    d2.programModule().programs.uid(enrollmentRepository.get().program())
-                            .withAllChildren().get()
-                            .programTrackedEntityAttributes()
-            )
-                    .flatMapIterable(programTrackedEntityAttributes -> programTrackedEntityAttributes)
-                    .map(programAttribute -> {
-
-                        TrackedEntityAttribute attribute = d2.trackedEntityModule().trackedEntityAttributes
-                                .uid(
-                                        programAttribute.trackedEntityAttribute().uid())
-                                .withAllChildren()
-                                .get();
-                        TrackedEntityAttributeValueObjectRepository valueRepository =
-                                d2.trackedEntityModule().trackedEntityAttributeValues
-                                        .value(programAttribute.trackedEntityAttribute().uid(),
-                                                enrollmentRepository.get().trackedEntityInstance());
-
-                        // TODO Check if attribute is generated and value is null and if so,
-                        //  get reserved value from SDK, make the field not editable
-
-                        FormField field = new FormField(
-                                attribute.uid(),
-                                attribute.optionSet() != null ? attribute.optionSet().uid() : null,
-                                attribute.valueType(),
-                                attribute.formName(),
-                                valueRepository.exists() ? valueRepository.get().value() : null,
-                                null,
-                                false,
-                                attribute.style()
-                        );
-
-                        fieldMap.put(programAttribute.trackedEntityAttribute().uid(), field);
-                        return programAttribute;
-                    }).toList().toFlowable()
-                    .map(list -> fieldMap);
+        return Flowable.empty();
     }
 
     public void saveCoordinates(double lat, double lon) {

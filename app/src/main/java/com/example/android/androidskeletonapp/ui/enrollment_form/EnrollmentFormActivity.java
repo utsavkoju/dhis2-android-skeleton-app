@@ -53,9 +53,7 @@ public class EnrollmentFormActivity extends AppCompatActivity {
 
         adapter = new FormAdapter((fieldUid, value) -> {
             try {
-                Sdk.d2().trackedEntityModule().trackedEntityAttributeValues.value(fieldUid,
-                        getIntent().getStringExtra(IntentExtra.TEI_UID.name()))
-                        .set(value);
+                createAttributeValue(fieldUid, value);
             } catch (D2Error d2Error) {
                 d2Error.printStackTrace();
             }
@@ -68,6 +66,12 @@ public class EnrollmentFormActivity extends AppCompatActivity {
                 getIntent().getStringExtra(IntentExtra.TEI_UID.name()),
                 getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name()),
                 getIntent().getStringExtra(IntentExtra.OU_UID.name()));
+    }
+
+    private void createAttributeValue(String attributeUid, String value) throws D2Error {
+        Sdk.d2().trackedEntityModule().trackedEntityAttributeValues
+                .value(attributeUid, getIntent().getStringExtra(IntentExtra.TEI_UID.name()))
+                .set(value);
     }
 
     @Override
