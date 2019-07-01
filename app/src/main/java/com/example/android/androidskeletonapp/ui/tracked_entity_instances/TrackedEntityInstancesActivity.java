@@ -41,14 +41,6 @@ public class TrackedEntityInstancesActivity extends ListActivity {
         selectedProgram = getIntent().getStringExtra(IntentExtra.PROGRAM.name());
         compositeDisposable = new CompositeDisposable();
         observeTrackedEntityInstances();
-
-        if (isEmpty(selectedProgram))
-            findViewById(R.id.enrollmentButton).setVisibility(View.GONE);
-
-        findViewById(R.id.enrollmentButton).setOnClickListener(view -> {
-            // TODO Create tracked entity instance
-            }
-        );
     }
 
     private void observeTrackedEntityInstances() {
