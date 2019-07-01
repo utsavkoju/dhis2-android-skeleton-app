@@ -54,10 +54,6 @@
             android:name=".ui.enrollment_form.EnrollmentFormActivity"
             android:label="@string/title_activity_enrollment_form"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.d2_errors.D2ErrorActivity"
-            android:label="@string/title_activity_d2_errors"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.event_form.EventFormActivity"
             android:label="@string/title_activity_event_form"
             android:theme="@style/AppTheme.NoActionBar" />

@@ -257,8 +257,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        // TODO Launch d2 errors activity
-
         if (id == R.id.navPrograms) {
             ActivityStarter.startActivity(this, ProgramsActivity.class,false);
         } else if (id == R.id.navTrackedEntities) {
