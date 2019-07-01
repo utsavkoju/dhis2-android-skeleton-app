@@ -5,21 +5,15 @@ import android.view.View;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
-import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
-import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
 
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
 
 public class ProgramsActivity extends ListActivity implements OnProgramSelectionListener {
-
-    private Disposable disposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,36 +26,21 @@ public class ProgramsActivity extends ListActivity implements OnProgramSelection
         ProgramsAdapter adapter = new ProgramsAdapter(this);
         recyclerView.setAdapter(adapter);
 
-        disposable = Sdk.d2().organisationUnitModule().organisationUnits
-                /*.byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)*/.getAsync()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(organisationUnitUids -> Sdk.d2().programModule().programs
-                        .byOrganisationUnitList(UidsHelper.getUidsList(organisationUnitUids))
-                        .orderByName(RepositoryScope.OrderByDirection.ASC)
-                        .withStyle()
-                        .withProgramStages()
-                        .getPaged(20))
-                .subscribe(programs -> programs.observe(this, programPagedList -> {
-                    adapter.submitList(programPagedList);
-                    findViewById(R.id.programsNotificator).setVisibility(
-                            programPagedList.isEmpty() ? View.VISIBLE : View.GONE);
-                }));
-    }
+        // TODO Filter and sort Programs by orgUnit and displayName
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (disposable != null) {
-            disposable.dispose();
-        }
+        LiveData<PagedList<Program>> programs = Sdk.d2().programModule().programs
+                .withStyle()
+                .getPaged(20);
+
+        programs.observe(this, programPagedList -> {
+            adapter.submitList(programPagedList);
+            findViewById(R.id.programsNotificator).setVisibility(
+                    programPagedList.isEmpty() ? View.VISIBLE : View.GONE);
+        });
     }
 
     @Override
     public void onProgramSelected(String programUid, ProgramType programType) {
-        if (programType == ProgramType.WITH_REGISTRATION)
-            ActivityStarter.startActivity(this,
-                    TrackedEntityInstancesActivity
-                            .getTrackedEntityInstancesActivityIntent(this, programUid));
+
     }
 }

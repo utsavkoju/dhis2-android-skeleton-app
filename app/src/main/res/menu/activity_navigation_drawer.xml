@@ -8,12 +8,7 @@
             android:id="@+id/navPrograms"
             android:icon="@drawable/ic_programs_black_24dp"
             android:title="@string/title_activity_programs" />
-        <item
-            android:id="@+id/navTrackedEntities"
-            android:icon="@drawable/ic_group_black_24dp"
-            android:title="@string/title_activity_tracked_entity_instances" />
 
-        <!--TODO add item for search-->
     </group>
 
     <item android:title="@string/data_management">
