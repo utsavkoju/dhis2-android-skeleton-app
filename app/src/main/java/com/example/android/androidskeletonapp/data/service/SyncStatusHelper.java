@@ -25,9 +25,4 @@ public class SyncStatusHelper {
     public static int dataValueCount() {
         return Sdk.d2().dataValueModule().dataValues.count();
     }
-
-    public static boolean isThereDataToUpload() {
-        // TODO Logic to know if there is data to upload
-        return true;
-    }
 }
