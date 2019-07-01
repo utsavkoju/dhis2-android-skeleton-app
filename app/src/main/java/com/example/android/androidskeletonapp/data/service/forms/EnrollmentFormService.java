@@ -2,7 +2,6 @@ package com.example.android.androidskeletonapp.data.service.forms;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.enrollment.EnrollmentObjectRepository;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
@@ -31,25 +30,9 @@ public class EnrollmentFormService {
     }
 
     public boolean init(D2 d2, String teiUid, String programUid, String ouUid) {
-        this.d2 = d2;
-        try {
-            String enrollmentUid = d2.enrollmentModule().enrollments.add(
-                    EnrollmentCreateProjection.builder()
-                            .organisationUnit(ouUid)
-                            .program(programUid)
-                            .trackedEntityInstance(teiUid)
-                            .build()
-            );
-            enrollmentRepository = d2.enrollmentModule().enrollments.uid(enrollmentUid);
-            enrollmentRepository.setEnrollmentDate(new Date());
-            enrollmentRepository.setIncidentDate(new Date());
-            return true;
-        } catch (D2Error d2Error) {
-            d2Error.printStackTrace();
-            return false;
-        }
+        // TODO Create enrollment
+        return false;
     }
-
 
     public Flowable<Map<String, FormField>> getEnrollmentFormFields() {
         return Flowable.empty();

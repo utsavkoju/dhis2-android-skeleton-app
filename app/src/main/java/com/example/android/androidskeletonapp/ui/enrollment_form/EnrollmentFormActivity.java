@@ -12,20 +12,15 @@ import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentForm
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import java.util.ArrayList;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class EnrollmentFormActivity extends AppCompatActivity {
 
     private ActivityEnrollmentFormBinding binding;
-    private FormAdapter adapter;
     private CompositeDisposable disposable;
 
     private enum IntentExtra {
@@ -51,15 +46,7 @@ public class EnrollmentFormActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        adapter = new FormAdapter((fieldUid, value) -> {
-            try {
-                createAttributeValue(fieldUid, value);
-            } catch (D2Error d2Error) {
-                d2Error.printStackTrace();
-            }
-        });
         binding.buttonEnd.setOnClickListener(this::finishEnrollment);
-        binding.formRecycler.setAdapter(adapter);
 
         EnrollmentFormService.getInstance().init(
                 Sdk.d2(),
@@ -69,27 +56,13 @@ public class EnrollmentFormActivity extends AppCompatActivity {
     }
 
     private void createAttributeValue(String attributeUid, String value) throws D2Error {
-        Sdk.d2().trackedEntityModule().trackedEntityAttributeValues
-                .value(attributeUid, getIntent().getStringExtra(IntentExtra.TEI_UID.name()))
-                .set(value);
+        // TODO Create attribute value
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         disposable = new CompositeDisposable();
-
-        disposable.add(
-                EnrollmentFormService.getInstance().getEnrollmentFormFields()
-                        .subscribeOn(Schedulers.io())
-                        .map(fields -> new ArrayList<>(fields.values()))
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                fieldData -> adapter.updateData(fieldData),
-                                Throwable::printStackTrace
-                        )
-        );
     }
 
     @Override
