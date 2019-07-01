@@ -16,12 +16,8 @@
             android:id="@+id/navTrackedEntitiesSearch"
             android:icon="@drawable/ic_search"
             android:title="@string/title_activity_tracked_entity_search" />
-        <item
-            android:id="@+id/navD2Errors"
-            android:icon="@drawable/ic_error_outline_black_24dp"
-            android:title="@string/title_activity_d2_errors" />
 
-        <!--TODO Add item to launch foreign keys activity-->
+        <!--TODO Add item to launch d2 errors activity-->
 
     </group>
 
