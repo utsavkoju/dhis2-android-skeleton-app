@@ -9,7 +9,6 @@ import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.ui.base.ListItemWithStyleHolder;
 
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.State;
 
 import androidx.core.content.ContextCompat;
 
@@ -53,9 +52,5 @@ public class StyleBinderHelper {
         Drawable drawable = imageView.getBackground();
         drawable.setColorFilter(col, PorterDuff.Mode.ADD);
         imageView.setBackground(drawable);
-    }
-
-    public static void setState(State state, ImageView syncIcon) {
-        // TODO set state for tracked entity instance
     }
 }

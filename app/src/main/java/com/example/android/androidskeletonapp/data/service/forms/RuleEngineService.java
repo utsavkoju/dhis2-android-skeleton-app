@@ -1,8 +1,5 @@
 package com.example.android.androidskeletonapp.data.service.forms;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import org.apache.commons.jexl2.JexlEngine;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.ValueType;
@@ -44,6 +41,8 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import io.reactivex.Flowable;
 
 import static android.text.TextUtils.isEmpty;
@@ -224,7 +223,9 @@ public class RuleEngineService {
         String code = d2.organisationUnitModule().organisationUnits.uid(event.organisationUnit()).get().code();
         String stageName = d2.programModule().programStages.uid(event.programStage()).get().name();
         List<TrackedEntityDataValue> eventDataValue = d2.trackedEntityModule().trackedEntityDataValues
-                .byEvent().eq(event.uid()).get();
+                .byEvent().eq(event.uid())
+                .byValue().isNotNull()
+                .get();
         List<RuleDataValue> ruleDataValues = transformToRuleDataValue(event, eventDataValue);
         return RuleEvent.create(event.uid(),
                 event.programStage(),

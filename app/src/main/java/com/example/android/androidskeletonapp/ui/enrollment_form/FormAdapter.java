@@ -33,12 +33,10 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
     @NonNull
     @Override
     public FieldHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // TODO Check if value type is OPTIONSETIMAGE and create an option set image field holder
         if (viewType == OPTIONSET) {
             return new OptionSetFieldHolder(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_field_optionset, parent, false), valueSavedListener);
-        } else if (viewType == OPTIONSETIMAGE) {
-            return new OptionSetImageFieldHolder(LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_field_optionset_image, parent, false), valueSavedListener);
         } else
             switch (ValueType.values()[viewType]) {
                 case DATE:
@@ -102,10 +100,7 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
     @Override
     public int getItemViewType(int position) {
         if (fields.get(position).getOptionSetUid() != null && fields.get(position).getOptionSetUid() != null)
-            if (isListingRendering)
-                return OPTIONSET;
-            else
-                return OPTIONSETIMAGE;
+            return OPTIONSET; // TODO Check if not listing rendering and return OPTIONSETIMAGE
         else
             return fields.get(position).getValueType().ordinal();
 

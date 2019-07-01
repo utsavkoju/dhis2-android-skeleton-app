@@ -6,15 +6,11 @@ import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.event.EventCreateProjection;
 import org.hisp.dhis.android.core.event.EventObjectRepository;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.program.ProgramStageSection;
-import org.hisp.dhis.android.core.program.ProgramStageSectionRenderingType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Flowable;
@@ -87,26 +83,16 @@ public class EventFormService {
                                 d2.trackedEntityModule().trackedEntityDataValues
                                         .value(eventRepository.get().uid(), dataElement.uid());
 
-                        if (dataElement.optionSetUid() != null && !isListingRendering) {
-                            for (Option option : d2.optionModule().options
-                                    .byOptionSetUid().eq(dataElement.optionSetUid()).withStyle().get()) {
-                                FormField formField = new FormField(
-                                        dataElement.uid(), dataElement.optionSetUid(),
-                                        dataElement.valueType(), option.displayName(),
-                                        valueRepository.exists() ? valueRepository.get().value() : null,
-                                        option.code(), true,
-                                        option.style()
-                                );
-                                fieldMap.put(dataElement.uid() + "_" + option.uid(), formField);
-                            }
-                        } else
-                            fieldMap.put(dataElement.uid(), new FormField(
-                                    dataElement.uid(), dataElement.optionSetUid(),
-                                    dataElement.valueType(), dataElement.displayName(),
-                                    valueRepository.exists() ? valueRepository.get().value() : null,
-                                    null, true,
-                                    dataElement.style())
-                            );
+                        // TODO Create a form field for each option inside an option set
+
+                        fieldMap.put(dataElement.uid(), new FormField(
+                                dataElement.uid(), dataElement.optionSetUid(),
+                                dataElement.valueType(), dataElement.displayName(),
+                                valueRepository.exists() ? valueRepository.get().value() : null,
+                                null, true,
+                                dataElement.style())
+                        );
+
                         return programStageDataElement;
                     })
                     .toList().toFlowable()
@@ -146,13 +132,7 @@ public class EventFormService {
     }
 
     public Flowable<Boolean> isListingRendering() {
-        return Flowable.fromCallable(() -> {
-            List<ProgramStageSection> matrixRenderingSections = d2.programModule().programStageSections
-                    .byProgramStageUid().eq(eventRepository.get().programStage())
-                    .byMobileRenderType().notIn(ProgramStageSectionRenderingType.LISTING.name())
-                    .get();
-            this.isListingRendering = matrixRenderingSections.isEmpty();
-            return isListingRendering;
-        });
+        // TODO Check if a program stage section has a different rendering type from listing
+        return Flowable.just(false);
     }
 }
