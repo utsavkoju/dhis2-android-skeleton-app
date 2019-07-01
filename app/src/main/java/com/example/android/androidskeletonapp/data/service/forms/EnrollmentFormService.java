@@ -1,7 +1,5 @@
 package com.example.android.androidskeletonapp.data.service.forms;
 
-import android.text.TextUtils;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
@@ -79,14 +77,8 @@ public class EnrollmentFormService {
                                         .value(programAttribute.trackedEntityAttribute().uid(),
                                                 enrollmentRepository.get().trackedEntityInstance());
 
-                        if (attribute.generated() && (valueRepository.get() == null || (valueRepository.get() != null &&
-                                TextUtils.isEmpty(valueRepository.get().value())))) {
-                            //get reserved value
-                            String value = d2.trackedEntityModule().reservedValueManager
-                                    .getValue(programAttribute.trackedEntityAttribute().uid(),
-                                            enrollmentRepository.get().organisationUnit());
-                            valueRepository.set(value);
-                        }
+                        // TODO Check if attribute is generated and value is null and if so,
+                        //  get reserved value from SDK, make the field not editable
 
                         FormField field = new FormField(
                                 attribute.uid(),
@@ -95,10 +87,9 @@ public class EnrollmentFormService {
                                 attribute.formName(),
                                 valueRepository.exists() ? valueRepository.get().value() : null,
                                 null,
-                                !attribute.generated(),
+                                false,
                                 attribute.style()
                         );
-
 
                         fieldMap.put(programAttribute.trackedEntityAttribute().uid(), field);
                         return programAttribute;

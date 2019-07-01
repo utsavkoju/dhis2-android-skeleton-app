@@ -8,16 +8,11 @@ import android.view.View;
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.forms.EnrollmentFormService;
-import com.example.android.androidskeletonapp.data.service.forms.FormField;
-import com.example.android.androidskeletonapp.data.service.forms.RuleEngineService;
 import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentFormBinding;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.rules.RuleEngine;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +20,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.processors.PublishProcessor;
 import io.reactivex.schedulers.Schedulers;
 
 public class EnrollmentFormActivity extends AppCompatActivity {
@@ -33,9 +27,6 @@ public class EnrollmentFormActivity extends AppCompatActivity {
     private ActivityEnrollmentFormBinding binding;
     private FormAdapter adapter;
     private CompositeDisposable disposable;
-    private PublishProcessor<Boolean> engineInitialization;
-    private RuleEngineService engineService;
-    private RuleEngine ruleEngine;
 
     private enum IntentExtra {
         TEI_UID, PROGRAM_UID, OU_UID
@@ -67,22 +58,16 @@ public class EnrollmentFormActivity extends AppCompatActivity {
                         .set(value);
             } catch (D2Error d2Error) {
                 d2Error.printStackTrace();
-            } finally {
-                engineInitialization.onNext(true);
             }
         });
         binding.buttonEnd.setOnClickListener(this::finishEnrollment);
         binding.formRecycler.setAdapter(adapter);
 
-        engineInitialization = PublishProcessor.create();
-
-        if (EnrollmentFormService.getInstance().init(
+        EnrollmentFormService.getInstance().init(
                 Sdk.d2(),
                 getIntent().getStringExtra(IntentExtra.TEI_UID.name()),
                 getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name()),
-                getIntent().getStringExtra(IntentExtra.OU_UID.name())))
-            this.engineService = new RuleEngineService();
-
+                getIntent().getStringExtra(IntentExtra.OU_UID.name()));
     }
 
     @Override
@@ -91,28 +76,9 @@ public class EnrollmentFormActivity extends AppCompatActivity {
         disposable = new CompositeDisposable();
 
         disposable.add(
-                engineService.configure(Sdk.d2(),
-                        getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name()),
-                        EnrollmentFormService.getInstance().getEnrollmentUid(),
-                        null
-                )
+                EnrollmentFormService.getInstance().getEnrollmentFormFields()
                         .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                ruleEngine -> {
-                                    this.ruleEngine = ruleEngine;
-                                    engineInitialization.onNext(true);
-                                },
-                                Throwable::printStackTrace
-                        )
-        );
-
-        disposable.add(
-                // TODO Zip attributes and rule engine calculation
-                engineInitialization
-                        .flatMap(next -> EnrollmentFormService.getInstance().getEnrollmentFormFields()
-                                         .subscribeOn(Schedulers.io()))
-                        .map(this::applyEffects)
+                        .map(fields -> new ArrayList<>(fields.values()))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
@@ -121,7 +87,6 @@ public class EnrollmentFormActivity extends AppCompatActivity {
                         )
         );
     }
-
 
     @Override
     protected void onPause() {
@@ -133,11 +98,6 @@ public class EnrollmentFormActivity extends AppCompatActivity {
     protected void onDestroy() {
         EnrollmentFormService.clear();
         super.onDestroy();
-    }
-
-    private List<FormField> applyEffects(Map<String, FormField> fields) {
-        // TODO Apply rule engine effects
-        return new ArrayList<>(fields.values());
     }
 
     @Override
