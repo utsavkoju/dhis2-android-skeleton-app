@@ -4,15 +4,12 @@ import android.util.Patterns;
 
 import com.example.android.androidskeletonapp.R;
 
-import org.hisp.dhis.android.core.d2manager.D2Manager;
 import org.hisp.dhis.android.core.user.User;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class LoginViewModel extends ViewModel {
 
@@ -31,10 +28,7 @@ public class LoginViewModel extends ViewModel {
     }
 
     public Single<User> login(String username, String password, String serverUrl) {
-        return D2Manager.setServerUrl(serverUrl).andThen(D2Manager.instantiateD2()).flatMap(d2 ->
-            d2.userModule().logIn(username, password))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        return setServerUrlAndLogin(username, password, serverUrl)
                 .doOnSuccess(user -> {
                     if (user != null) {
                         loginResult.postValue(new LoginResult(user));
@@ -45,6 +39,12 @@ public class LoginViewModel extends ViewModel {
                     loginResult.postValue(new LoginResult(R.string.login_failed));
                     throwable.printStackTrace();
                 });
+    }
+
+    public Single<User> setServerUrlAndLogin(String username, String password, String serverUrl) {
+        // TODO Set server url and login
+
+        return null;
     }
 
     void loginDataChanged(String serverUrl, String username, String password) {

@@ -25,8 +25,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        // TODO initialize stetho
-
         disposable = D2Manager.setUp(Sdk.getD2Configuration(this))
                 .andThen(isLogged())
                 .doOnSuccess(isLogged -> {

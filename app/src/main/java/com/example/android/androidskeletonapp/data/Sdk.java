@@ -14,8 +14,6 @@ public class Sdk {
 
     public static D2Configuration getD2Configuration(Context context) {
 
-        // TODO Add stetho network interceptor
-
         return D2Configuration.builder()
                 .appName("skeleton_App")
                 .appVersion("0.0.1")
