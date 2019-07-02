@@ -5,7 +5,9 @@ import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.enrollment.EnrollmentObjectRepository;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +54,16 @@ public class EnrollmentFormService {
 
 
     public Flowable<Map<String, FormField>> getEnrollmentFormFields() {
-        return Flowable.empty();
+
+        return Flowable.fromCallable(() -> {
+                    return new ArrayList<ProgramTrackedEntityAttribute>(); //TODO: replace with program attributes
+                }
+        ).map(programAttributeList -> {
+
+            //TODO for each programAttribute create and store a FormField Object into the fieldMap object
+
+            return fieldMap;
+        });
     }
 
     public void saveCoordinates(double lat, double lon) {

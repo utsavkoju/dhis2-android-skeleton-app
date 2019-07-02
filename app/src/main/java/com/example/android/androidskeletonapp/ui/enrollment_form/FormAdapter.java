@@ -2,13 +2,16 @@ package com.example.android.androidskeletonapp.ui.enrollment_form;
 
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.android.androidskeletonapp.data.service.forms.FormField;
+
+import org.hisp.dhis.android.core.common.ValueType;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
 
@@ -30,7 +33,32 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
     }
 
     public void updateData(List<FormField> updates) {
-        // TODO update data
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return fields.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return updates.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return fields.get(oldItemPosition).getUid().equals(updates.get(newItemPosition).getUid());
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                return fields.get(oldItemPosition) == updates.get(newItemPosition);
+            }
+        });
+
+        fields.clear();
+        fields.addAll(updates);
+
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @NonNull
@@ -42,11 +70,12 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull FieldHolder holder, int position) {
-        // TODO bind view holder
+        holder.bind(fields.get(position));
     }
 
     @Override
     public int getItemViewType(int position) {
+        //TODO: Return the valueType ordinal
         return position;
     }
 
