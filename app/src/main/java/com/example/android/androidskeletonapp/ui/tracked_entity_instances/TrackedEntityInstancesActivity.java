@@ -7,9 +7,14 @@ import android.view.View;
 
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
+import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
+import com.example.android.androidskeletonapp.ui.enrollment_form.EnrollmentFormActivity;
 
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +27,7 @@ public class TrackedEntityInstancesActivity extends ListActivity {
 
     private CompositeDisposable compositeDisposable;
     private String selectedProgram;
+    private Program program;
 
     private enum IntentExtra {
         PROGRAM
@@ -39,6 +45,7 @@ public class TrackedEntityInstancesActivity extends ListActivity {
         setUp(R.layout.activity_tracked_entity_instances, R.id.trackedEntityInstancesToolbar,
                 R.id.trackedEntityInstancesRecyclerView);
         selectedProgram = getIntent().getStringExtra(IntentExtra.PROGRAM.name());
+        program = Sdk.d2().programModule().programs.uid(selectedProgram).get();
         compositeDisposable = new CompositeDisposable();
         observeTrackedEntityInstances();
 
@@ -46,9 +53,10 @@ public class TrackedEntityInstancesActivity extends ListActivity {
             findViewById(R.id.enrollmentButton).setVisibility(View.GONE);
 
         findViewById(R.id.enrollmentButton).setOnClickListener(view -> {
-            // TODO Create tracked entity instance
-            }
-        );
+            String teiUid = null;
+
+            //TODO Create a new TEI and open the EnrollmentFormActivity if success
+        });
     }
 
     private void observeTrackedEntityInstances() {

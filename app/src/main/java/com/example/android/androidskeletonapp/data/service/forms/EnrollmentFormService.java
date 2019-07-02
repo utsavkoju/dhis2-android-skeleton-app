@@ -30,6 +30,7 @@ public class EnrollmentFormService {
     }
 
     public boolean init(D2 d2, String teiUid, String programUid, String ouUid) {
+        this.d2 = d2;
         // TODO Create enrollment
         return false;
     }
