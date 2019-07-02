@@ -5,22 +5,21 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
+
 import com.example.android.androidskeletonapp.R;
-import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstanceAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramType;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.search.QueryFilter;
 import org.hisp.dhis.android.core.trackedentity.search.QueryItem;
-import org.hisp.dhis.android.core.trackedentity.search.QueryOperator;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 
 import java.util.ArrayList;
@@ -62,11 +61,10 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
     }
 
     private void searchTrackedEntityInstances() {
-        // TODO Search TEIs
         recyclerView.setAdapter(adapter);
 
         // TODO Get list of SEARCH root organisation units
-        List<OrganisationUnit> organisationUnits = Lists.newArrayList();
+        List<OrganisationUnit> organisationUnits = new ArrayList<>();
 
         // TODO Get first program with registration
         Program program = null;
@@ -91,9 +89,7 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
                 .page(1)
                 .build();
 
-        Sdk.d2().trackedEntityModule().trackedEntityInstanceQuery
-                .query(query)
-                .onlineFirst().getPaged(15).observe(this, trackedEntityInstancePagedList -> {
+        getTrackedEntityInstanceList(query).observe(this, trackedEntityInstancePagedList -> {
             adapter.submitList(trackedEntityInstancePagedList);
             downloadDataText.setVisibility(View.GONE);
             notificator.setVisibility(View.GONE);
@@ -101,5 +97,10 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
             findViewById(R.id.searchNotificator).setVisibility(
                     trackedEntityInstancePagedList.isEmpty() ? View.VISIBLE : View.GONE);
         });
+    }
+
+    private LiveData<PagedList<TrackedEntityInstance>> getTrackedEntityInstanceList(TrackedEntityInstanceQuery query) {
+        // TODO Use trackedEntityInstanceQuery to return a pagedList with onlineFirst() strategy
+        return null;
     }
 }
