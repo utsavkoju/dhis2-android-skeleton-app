@@ -1,5 +1,6 @@
 package com.example.android.androidskeletonapp.ui.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar;
 import org.hisp.dhis.android.core.user.User;
 
 import java.text.MessageFormat;
+import java.time.Instant;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -224,8 +226,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         /*TODO Add program navigation*/
-
-        if (id == R.id.navWipeData) {
+        if(id == R.id.navProgram) {
+            ActivityStarter.startActivity(this, ProgramsActivity.class, true);
+        } else if (id == R.id.navWipeData) {
             syncStatusText.setText(R.string.wiping_data);
             wipeData();
         } else if (id == R.id.navExit) {
