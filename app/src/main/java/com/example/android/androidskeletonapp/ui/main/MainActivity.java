@@ -6,6 +6,12 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.example.android.androidskeletonapp.R;
 import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
@@ -13,16 +19,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.user.User;
 
 import java.text.MessageFormat;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.example.android.androidskeletonapp.data.service.LogOutService.logOut;
 
@@ -180,15 +186,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void syncMetadata() {
-        // TODO Sync user metadata and set syncing finished
+        compositeDisposable.add(syncMetadataObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(Throwable::printStackTrace)
+                .doOnComplete(() -> {
+                    setSyncingFinished();
+                })
+                .subscribe());
+    }
+
+    private Observable<D2Progress> syncMetadataObservable() {
+        // TODO Sync user metadata
+        return Observable.never();
     }
 
     private void downloadData() {
-        // TODO Download teis, events and data values and set syncing finished
+        compositeDisposable.add(
+                downloadDataObservable()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnComplete(() -> setSyncingFinished())
+                        .doOnError(Throwable::printStackTrace)
+                        .subscribe());
+    }
+
+    private Observable<D2Progress> downloadDataObservable() {
+        return Observable.merge(
+                // TODO Download trackedEntityInstances
+                Observable.never(),
+
+                // TODO Aggregated data values
+                Observable.never()
+        );
     }
 
     private void wipeData() {
-        // TODO Wipe data and set syncing finished
+        compositeDisposable.add(
+                Observable.fromCallable(() -> wipeDataCall())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnError(Throwable::printStackTrace)
+                        .doOnComplete(this::setSyncingFinished)
+                        .subscribe());
+    }
+
+    private Unit wipeDataCall() {
+        // TODO Wipe data
+        return new Unit();
     }
 
     @Override
