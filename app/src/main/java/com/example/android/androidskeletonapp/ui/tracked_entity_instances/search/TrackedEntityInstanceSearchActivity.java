@@ -6,10 +6,28 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.androidskeletonapp.R;
+import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstanceAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.common.collect.Lists;
+
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramType;
+import org.hisp.dhis.android.core.trackedentity.search.QueryFilter;
+import org.hisp.dhis.android.core.trackedentity.search.QueryItem;
+import org.hisp.dhis.android.core.trackedentity.search.QueryOperator;
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributePatientNameUid;
 
 public class TrackedEntityInstanceSearchActivity extends ListActivity {
 
@@ -45,5 +63,43 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
 
     private void searchTrackedEntityInstances() {
         // TODO Search TEIs
+        recyclerView.setAdapter(adapter);
+
+        // TODO Get list of SEARCH root organisation units
+        List<OrganisationUnit> organisationUnits = Lists.newArrayList();
+
+        // TODO Get first program with registration
+        Program program = null;
+
+        List<String> organisationUids = new ArrayList<>();
+        if (!organisationUnits.isEmpty()) {
+            organisationUids = UidsHelper.getUidsList(organisationUnits);
+        }
+
+        TrackedEntityInstanceQuery query = TrackedEntityInstanceQuery.builder()
+                // TODO Filter by organisationUnits in DESCENDANT mode
+
+                // TODO Filter by program
+
+                .filter(Collections.singletonList(
+                        QueryItem.create(attributePatientNameUid(), QueryFilter.builder()
+                                // TODO Use filter method to filter any attribute "like" "a"
+
+                                .build())))
+                .pageSize(15)
+                .paging(true)
+                .page(1)
+                .build();
+
+        Sdk.d2().trackedEntityModule().trackedEntityInstanceQuery
+                .query(query)
+                .onlineFirst().getPaged(15).observe(this, trackedEntityInstancePagedList -> {
+            adapter.submitList(trackedEntityInstancePagedList);
+            downloadDataText.setVisibility(View.GONE);
+            notificator.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
+            findViewById(R.id.searchNotificator).setVisibility(
+                    trackedEntityInstancePagedList.isEmpty() ? View.VISIBLE : View.GONE);
+        });
     }
 }
