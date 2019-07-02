@@ -3,11 +3,20 @@ package com.example.android.androidskeletonapp.ui.tracked_entity_instances;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.example.android.androidskeletonapp.R;
+import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.ui.base.ListActivity;
 
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import io.reactivex.disposables.CompositeDisposable;
+
+import static android.text.TextUtils.isEmpty;
 
 public class TrackedEntityInstancesActivity extends ListActivity {
 
@@ -31,7 +40,32 @@ public class TrackedEntityInstancesActivity extends ListActivity {
                 R.id.trackedEntityInstancesRecyclerView);
         selectedProgram = getIntent().getStringExtra(IntentExtra.PROGRAM.name());
         compositeDisposable = new CompositeDisposable();
-        // TODO create TEI list
+
+        // TODO Uncomment this method to trigger trackedEntitySearch
+        // observeTrackedEntityInstances();
+    }
+
+    private void observeTrackedEntityInstances() {
+        TrackedEntityInstanceAdapter adapter = new TrackedEntityInstanceAdapter();
+        recyclerView.setAdapter(adapter);
+
+        getTeiRepository().getPaged(20).observe(this, trackedEntityInstancePagedList -> {
+            adapter.submitList(trackedEntityInstancePagedList);
+            findViewById(R.id.trackedEntityInstancesNotificator).setVisibility(
+                    trackedEntityInstancePagedList.isEmpty() ? View.VISIBLE : View.GONE);
+        });
+    }
+
+    private TrackedEntityInstanceCollectionRepository getTeiRepository() {
+        // TODO Get TrackedEntityInstanceRepository to show trackedEntityInstances with Attributes
+        TrackedEntityInstanceCollectionRepository teiRepository = null;
+
+        if (!isEmpty(selectedProgram)) {
+            // TODO If program is selected, filter by program uid
+            return teiRepository;
+        } else {
+            return teiRepository;
+        }
     }
 
     @Override

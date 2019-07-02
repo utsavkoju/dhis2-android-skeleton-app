@@ -12,6 +12,7 @@ import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
+import com.example.android.androidskeletonapp.ui.tracked_entity_instances.search.TrackedEntityInstanceSearchActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -227,10 +228,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        // TODO Add navigation to tei list and tei search
-
         if (id == R.id.navPrograms) {
             ActivityStarter.startActivity(this, ProgramsActivity.class,false);
+        } else if (id == R.id.navTrackedEntities) {
+            ActivityStarter.startActivity(this, TrackedEntityInstancesActivity.class,false);
+        } else if (id == R.id.navTrackedEntitiesSearch) {
+            ActivityStarter.startActivity(this, TrackedEntityInstanceSearchActivity.class, false);
         } else if (id == R.id.navWipeData) {
             syncStatusText.setText(R.string.wiping_data);
             wipeData();

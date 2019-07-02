@@ -5,13 +5,24 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.android.androidskeletonapp.R;
+import com.example.android.androidskeletonapp.data.service.DateFormatHelper;
 import com.example.android.androidskeletonapp.ui.base.DiffByIdItemCallback;
 import com.example.android.androidskeletonapp.ui.base.ListItemWithSyncHolder;
 
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import androidx.annotation.NonNull;
 import androidx.paging.PagedListAdapter;
+
+import java.text.MessageFormat;
+import java.util.List;
+
+import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributePatientIdUid;
+import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributePatientNameUid;
+import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributeResidentInCatchmentAreaUid;
+import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributeYearOfBirthUid;
+import static com.example.android.androidskeletonapp.data.service.StyleBinderHelper.setBackgroundColor;
 
 public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntityInstance, ListItemWithSyncHolder> {
 
@@ -29,6 +40,41 @@ public class TrackedEntityInstanceAdapter extends PagedListAdapter<TrackedEntity
 
     @Override
     public void onBindViewHolder(@NonNull ListItemWithSyncHolder holder, int position) {
-        // TODO Bind Tei
+        TrackedEntityInstance trackedEntityInstance = getItem(position);
+        List<TrackedEntityAttributeValue> values = trackedEntityInstance.trackedEntityAttributeValues();
+        holder.title.setText(valueAt(values, attributePatientNameUid()));
+        holder.subtitle1.setText(valueAt(values, attributePatientIdUid()));
+        holder.subtitle2.setText(setSubtitle2(values));
+        holder.rightText.setText(DateFormatHelper.formatDate(trackedEntityInstance.created()));
+        holder.icon.setImageResource(R.drawable.ic_person_black_24dp);
+        setBackgroundColor(R.color.colorAccentDark, holder.icon);
+    }
+
+    private String valueAt(List<TrackedEntityAttributeValue> values, String attributeUid) {
+        for (TrackedEntityAttributeValue attributeValue : values) {
+            if (attributeValue.trackedEntityAttribute().equals(attributeUid)) {
+                return attributeValue.value();
+            }
+        }
+
+        return null;
+    }
+
+    private String setSubtitle2(List<TrackedEntityAttributeValue> values) {
+        String yearOfBirth = valueAt(values, attributeYearOfBirthUid());
+        String residentInCatchmentArea = valueAt(values, attributeResidentInCatchmentAreaUid());
+        if (yearOfBirth != null) {
+            if (residentInCatchmentArea != null) {
+                return MessageFormat.format("{0} - {1}", yearOfBirth, residentInCatchmentArea);
+            } else {
+                return yearOfBirth;
+            }
+        } else {
+            if (residentInCatchmentArea != null) {
+                return residentInCatchmentArea;
+            } else {
+                return null;
+            }
+        }
     }
 }

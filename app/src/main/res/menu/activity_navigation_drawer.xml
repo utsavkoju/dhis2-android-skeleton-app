@@ -9,9 +9,14 @@
             android:icon="@drawable/ic_programs_black_24dp"
             android:title="@string/title_activity_programs" />
 
-        <!--TODO add item for tei list-->
-
-        <!--TODO add item for tei search-->
+        <item
+            android:id="@+id/navTrackedEntities"
+            android:icon="@drawable/ic_group_black_24dp"
+            android:title="@string/title_activity_tracked_entity_instances" />
+        <item
+            android:id="@+id/navTrackedEntitiesSearch"
+            android:icon="@drawable/ic_search"
+            android:title="@string/title_activity_tracked_entity_search" />
     </group>
 
     <item android:title="@string/data_management">
