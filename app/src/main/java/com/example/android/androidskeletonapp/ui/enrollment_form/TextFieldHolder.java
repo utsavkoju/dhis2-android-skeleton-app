@@ -47,5 +47,19 @@ class TextFieldHolder extends FieldHolder {
         }
 
         // TODO set initial value, enable if editable and add value listener for text changes
+        if(fieldItem.getValue().isEmpty())
+            editText.setText(fieldItem.getValue());
+        else
+            editText.setText(null);
+
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    String value = editText.getText()!=null?editText.getText().toString():null;
+                    valueSavedListener.onValueSaved(fieldItem.getUid(), editText.getText().toString());
+                }
+            }
+        });
     }
 }

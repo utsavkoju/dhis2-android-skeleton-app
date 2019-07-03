@@ -1,11 +1,16 @@
 package com.example.android.androidskeletonapp.data.service.forms;
 
+import com.example.android.androidskeletonapp.data.Sdk;
+
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.enrollment.EnrollmentObjectRepository;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjectRepository;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,13 +59,23 @@ public class EnrollmentFormService {
 
 
     public Flowable<Map<String, FormField>> getEnrollmentFormFields() {
-
+        String programUID = enrollmentRepository.get().program();
         return Flowable.fromCallable(() -> {
-                    return new ArrayList<ProgramTrackedEntityAttribute>(); //TODO: replace with program attributes
+
+            return Sdk.d2().programModule().programs.uid(enrollmentRepository.get().program()).withAllChildren().get().programTrackedEntityAttributes(); //TODO: replace with program attributes
                 }
         ).map(programAttributeList -> {
 
             //TODO for each programAttribute create and store a FormField Object into the fieldMap object
+            for(ProgramTrackedEntityAttribute programAttribute: programAttributeList) {
+                TrackedEntityAttribute attribute = d2.trackedEntityModule().trackedEntityAttributes.uid(programAttribute.trackedEntityAttribute().uid()).get();
+                TrackedEntityDataValueObjectRepository attrRepos = d2.trackedEntityModule().trackedEntityDataValues.value(attribute.uid(), enrollmentRepository.get().trackedEntityInstance());
+                String value = null;
+                if(attrRepos.exists())
+                    value = attrRepos.get().value();
+                FormField formField = new FormField(attribute.uid(), attribute.optionSet().uid() != null?attribute.optionSet().uid():null, attribute.valueType(), attribute.name(), value, null, true, null);
+                fieldMap.put(attribute.uid(), formField);
+            }
 
             return fieldMap;
         });
