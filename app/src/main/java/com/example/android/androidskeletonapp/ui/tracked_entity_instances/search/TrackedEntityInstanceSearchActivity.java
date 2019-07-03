@@ -17,16 +17,12 @@ import com.google.android.material.snackbar.Snackbar;
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.search.QueryFilter;
-import org.hisp.dhis.android.core.trackedentity.search.QueryItem;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import static com.example.android.androidskeletonapp.data.service.AttributeHelper.attributePatientNameUid;
 
 public class TrackedEntityInstanceSearchActivity extends ListActivity {
 
@@ -69,6 +65,9 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
         // TODO Get first program with registration
         Program program = null;
 
+        // TODO Get TrackedEntityAttribute with name equal to "Malaria patient id"
+        TrackedEntityAttribute attribute = null;
+
         List<String> organisationUids = new ArrayList<>();
         if (!organisationUnits.isEmpty()) {
             organisationUids = UidsHelper.getUidsList(organisationUnits);
@@ -79,11 +78,8 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
 
                 // TODO Filter by program
 
-                .filter(Collections.singletonList(
-                        QueryItem.create(attributePatientNameUid(), QueryFilter.builder()
-                                // TODO Use filter method to filter any attribute "like" "a"
+                // TODO Use "filter" property to filter the previous attribute by "like=a"
 
-                                .build())))
                 .pageSize(15)
                 .paging(true)
                 .page(1)
@@ -101,6 +97,8 @@ public class TrackedEntityInstanceSearchActivity extends ListActivity {
 
     private LiveData<PagedList<TrackedEntityInstance>> getTrackedEntityInstanceList(TrackedEntityInstanceQuery query) {
         // TODO Use trackedEntityInstanceQuery to return a pagedList with onlineFirst() strategy
+        //  paged by 10
+
         return null;
     }
 }
