@@ -34,6 +34,18 @@ public class DataSetReportsAdapter extends PagedListAdapter<DataSetReport, ListI
 
     @Override
     public void onBindViewHolder(@NonNull ListItemWithSyncHolder holder, int position) {
-        // TODO bind view
+        DataSetReport dataSetReport = getItem(position);
+
+        // TODO Set meaningful texts to textViews
+        holder.title.setText("");
+        holder.subtitle1.setText("");
+        holder.subtitle2.setText("");
+
+        // TODO Set value count
+        holder.rightText.setText("");
+
+        holder.icon.setImageResource(R.drawable.ic_assignment_black_24dp);
+        setBackgroundColor(R.color.colorAccentDark, holder.icon);
+        setState(dataSetReport.state(), holder.syncIcon);
     }
 }

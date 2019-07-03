@@ -21,7 +21,10 @@
             android:icon="@drawable/ic_view_list_black_24dp"
             android:title="@string/title_activity_data_sets" />
 
-        <!--TODO Add item to launch data set reports activity-->
+        <item
+            android:id="@+id/navDataSetReports"
+            android:icon="@drawable/ic_assignment_black_24dp"
+            android:title="@string/title_activity_data_set_reports" />
 
         <item
             android:id="@+id/navD2Errors"

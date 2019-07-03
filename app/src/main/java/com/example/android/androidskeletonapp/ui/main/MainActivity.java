@@ -260,8 +260,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        // TODO Launch data set reports activity
-
         if (id == R.id.navPrograms) {
             ActivityStarter.startActivity(this, ProgramsActivity.class,false);
         } else if (id == R.id.navTrackedEntities) {
@@ -280,6 +278,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.navExit) {
             compositeDisposable.add(logOut(this));
         }
+
+        // TODO Launch data set reports activity when click on navDataSetReports
+
 
         DrawerLayout drawer = findViewById(R.id.drawerLayout);
         drawer.closeDrawer(GravityCompat.START);
