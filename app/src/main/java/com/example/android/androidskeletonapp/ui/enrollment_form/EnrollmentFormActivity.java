@@ -10,6 +10,8 @@ import com.example.android.androidskeletonapp.data.Sdk;
 import com.example.android.androidskeletonapp.data.service.forms.EnrollmentFormService;
 import com.example.android.androidskeletonapp.databinding.ActivityEnrollmentFormBinding;
 
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import androidx.annotation.Nullable;
@@ -57,6 +59,9 @@ public class EnrollmentFormActivity extends AppCompatActivity {
 
     private void createAttributeValue(String attributeUid, String value) throws D2Error {
         // TODO Create attribute value
+        Sdk.d2().trackedEntityModule().trackedEntityAttributeValues
+                .value(attributeUid, getIntent().getStringExtra(IntentExtra.TEI_UID.name()))
+                .set(value);
     }
 
     @Override
