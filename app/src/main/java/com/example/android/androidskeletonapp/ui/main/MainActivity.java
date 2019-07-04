@@ -274,7 +274,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.navD2Errors) {
             ActivityStarter.startActivity(this, D2ErrorActivity.class,false);
         } else if (id == R.id.navFKViolations) {
-            ActivityStarter.startActivity(this, ForeignKeyViolationsActivity.class,false);
+            ActivityStarter.startActivity(this, ForeignKeyViolationsActivity.class, false);
+        } else if (id == R.id.navDataSetReports) {
+            ActivityStarter.startActivity(this, DataSetReportsActivity.class, false);
         } else if (id == R.id.navWipeData) {
             syncStatusText.setText(R.string.wiping_data);
             wipeData();
