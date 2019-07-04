@@ -12,6 +12,7 @@ import com.example.android.androidskeletonapp.data.service.ActivityStarter;
 import com.example.android.androidskeletonapp.data.service.SyncStatusHelper;
 import com.example.android.androidskeletonapp.ui.d2_errors.D2ErrorActivity;
 import com.example.android.androidskeletonapp.ui.data_sets.DataSetsActivity;
+import com.example.android.androidskeletonapp.ui.data_sets.reports.DataSetReportsActivity;
 import com.example.android.androidskeletonapp.ui.foreign_key_violations.ForeignKeyViolationsActivity;
 import com.example.android.androidskeletonapp.ui.programs.ProgramsActivity;
 import com.example.android.androidskeletonapp.ui.tracked_entity_instances.TrackedEntityInstancesActivity;
@@ -268,6 +269,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ActivityStarter.startActivity(this, TrackedEntityInstanceSearchActivity.class,false);
         } else if (id == R.id.navDataSets) {
             ActivityStarter.startActivity(this, DataSetsActivity.class,false);
+        } else if (id == R.id.navDataSetReports) {
+            ActivityStarter.startActivity(this, DataSetReportsActivity.class,false);
         } else if (id == R.id.navD2Errors) {
             ActivityStarter.startActivity(this, D2ErrorActivity.class,false);
         } else if (id == R.id.navFKViolations) {
@@ -278,9 +281,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.navExit) {
             compositeDisposable.add(logOut(this));
         }
-
-        // TODO Launch data set reports activity when click on navDataSetReports
-
 
         DrawerLayout drawer = findViewById(R.id.drawerLayout);
         drawer.closeDrawer(GravityCompat.START);
