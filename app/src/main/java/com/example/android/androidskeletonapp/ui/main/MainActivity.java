@@ -119,7 +119,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // TODO Show a snackbar to notify about the action
 
             // TODO trigger data upload and subscribe (do not subscribe on the main thread!!!)
-            // TODO oncomplete, call setSyncingFinished()
+            // TODO You have to use, at least: subscribeOn(), observeOn(), doOnComplete(), subscribe()
+            // TODO Call setSyncFinished on complete
     }
 
     private void setSyncing() {
