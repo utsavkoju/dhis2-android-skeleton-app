@@ -1,6 +1,7 @@
 package com.example.android.androidskeletonapp.ui.main;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -27,6 +28,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import io.reactivex.Observable;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FloatingActionButton syncMetadataButton;
     private FloatingActionButton syncDataButton;
     // TODO - private FloatingActionButton uploadDataButton;
+    private FloatingActionButton uploadDataButton;
 
     private TextView syncStatusText;
     private ProgressBar progressBar;
@@ -93,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         syncMetadataButton = findViewById(R.id.syncMetadataButton);
         syncDataButton = findViewById(R.id.syncDataButton);
         // TODO bind uploadDataButton to "uploadDataButton" view
-
+        uploadDataButton = findViewById(R.id.uploadDataButton);
         syncStatusText = findViewById(R.id.notificator);
         progressBar = findViewById(R.id.syncProgressBar);
 
@@ -112,6 +115,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             syncStatusText.setText(R.string.syncing_data);
             downloadData();
         });
+
+        uploadDataButton.setOnClickListener(view->{
+            setSyncing();
+            Snackbar.make(view, "Uploading Data", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+            Observable.merge(Observable.fromCallable(Sdk.d2().trackedEntityModule().trackedEntityInstances.upload()), Observable.fromCallable(Sdk.d2().dataValueModule().dataValues.upload()))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnComplete(()->{
+                        setSyncingFinished();
+                        Snackbar.make(view, "Upload Successful", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    }).doOnError(throwable-> {
+                        Snackbar.make(view,"Errror Uploading", Snackbar.LENGTH_LONG).show();
+                        //Log.e("Main Activity Upload: ", String.valueOf(throwable));
+                    }).subscribe();
+            });
 
         // TODO Listen to uploadDataButton and execute these actions:
 
@@ -140,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void disableAllButtons() {
         setEnabledButton(syncMetadataButton, false);
         setEnabledButton(syncDataButton, false);
+        setEnabledButton(uploadDataButton, false);
         // TODO disable upload button
     }
 
@@ -149,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (metadataSynced) {
                 setEnabledButton(syncDataButton, true);
                 if (SyncStatusHelper.isThereDataToUpload()) {
-                    // TODO enable upload button
+                    setEnabledButton(syncDataButton, true);
                 }
             }
         }
