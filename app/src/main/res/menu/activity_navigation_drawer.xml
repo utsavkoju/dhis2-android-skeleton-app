@@ -16,7 +16,10 @@
             android:id="@+id/navTrackedEntitiesSearch"
             android:icon="@drawable/ic_search"
             android:title="@string/title_activity_tracked_entity_search" />
-
+        <item
+            android:id="@+id/navDataSets"
+            android:icon="@android:drawable/ic_menu_info_details"
+            android:title="@string/title_activity_data_sets"/>
         <!--TODO Add item to launch data set activity-->
 
         <item
