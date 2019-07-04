@@ -16,7 +16,10 @@
             android:id="@+id/navTrackedEntitiesSearch"
             android:icon="@drawable/ic_search"
             android:title="@string/title_activity_tracked_entity_search" />
-
+        <item
+            android:id="@+id/d2ErrorActivity"
+            android:icon="@drawable/ic_error_outline_black_24dp"
+            android:title="D2 Error Activity"/>
         <!--TODO Add item to launch d2 errors activity-->
 
     </group>
